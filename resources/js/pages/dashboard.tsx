@@ -1,8 +1,10 @@
+import AuthenticatedLayout from '../layouts/AuthenticatedLayout';
+
 const dashboard = () => {
     return (
-        <div className="min-h-screen p-6">
+        <AuthenticatedLayout>
             <h1 className="text-3xl font-bold">Dashboard</h1>
-        </div>
+        </AuthenticatedLayout>
     );
 };
 
