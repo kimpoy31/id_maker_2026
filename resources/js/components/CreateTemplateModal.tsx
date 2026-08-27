@@ -22,7 +22,7 @@ const CreateTemplateModal = ({ className }: { className?: string }) => {
     return (
         <>
             <button
-                className={`btn ${className}`}
+                className={`btn ${className} btn-primary`}
                 onClick={() =>
                     (
                         document.getElementById(
@@ -102,11 +102,19 @@ const CreateTemplateModal = ({ className }: { className?: string }) => {
                             />
                         </div>
                         <div className="modal-action">
-                            <form method="dialog">
-                                <button type="button" className="btn">
-                                    Cancel
-                                </button>
-                            </form>
+                            <button
+                                type="button"
+                                className="btn"
+                                onClick={() =>
+                                    (
+                                        document.getElementById(
+                                            'create_template_modal',
+                                        ) as HTMLDialogElement
+                                    )?.close()
+                                }
+                            >
+                                Cancel
+                            </button>
                             <button type="submit" className="btn btn-primary">
                                 Create
                             </button>

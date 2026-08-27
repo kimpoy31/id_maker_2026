@@ -9,6 +9,34 @@ use Illuminate\Support\Facades\Auth;
 class TemplateController extends Controller
 {
     /**
+     * Display a listing of templates.
+     */
+    public function index(Request $request)
+    {
+        $templates = Template::where('creator_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return inertia('dashboard', [
+            'templates' => $templates,
+        ]);
+    }
+
+    /**
+     * Display the specified template.
+     */
+    public function show(Request $request, string $name)
+    {
+        $template = Template::where('name', $name)
+            ->where('creator_id', Auth::id())
+            ->firstOrFail();
+
+        return inertia('templates/show', [
+            'template' => $template,
+        ]);
+    }
+
+    /**
      * Store a newly created template.
      */
     public function store(Request $request)

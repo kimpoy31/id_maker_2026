@@ -10,7 +10,7 @@ const AuthenticatedLayout = ({
     className?: string;
 }) => {
     return (
-        <div className={`min-h-screen ${className}`}>
+        <div className={`min-h-screen`}>
             <div className="navbar bg-base-100 shadow-xs">
                 <div className="flex-1">
                     <a className="btn btn-ghost text-xl">Lanyard</a>
@@ -19,7 +19,7 @@ const AuthenticatedLayout = ({
                     <LogoutModal className="btn-sm" />
                 </div>
             </div>
-            {children}
+            <div className={`${className} p-6`}>{children}</div>
         </div>
     );
 };
