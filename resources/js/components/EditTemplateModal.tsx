@@ -59,70 +59,22 @@ const EditTemplateModal = ({ template }: EditTemplateModalProps) => {
                                 required
                             />
                         </div>
-                        <div className="form-control">
-                            <label className="label">
-                                <span className="label-text">Unit</span>
-                            </label>
-                            <div className="flex items-center gap-2">
-                                <input
-                                    type="text"
-                                    value={
-                                        template.unit === 'px'
-                                            ? 'Pixels (px)'
-                                            : 'Inches (in)'
-                                    }
-                                    className="input-bordered input w-full bg-base-200"
-                                    disabled
-                                />
-                                <input
-                                    type="hidden"
-                                    name="unit"
-                                    value={template.unit}
-                                />
-                            </div>
-                        </div>
-                        <div className="form-control">
-                            <label className="label">
-                                <span className="label-text">Width</span>
-                            </label>
-                            <input
-                                type="number"
-                                name="width"
-                                step="0.01"
-                                defaultValue={template.width}
-                                className="input-bordered input w-full"
-                                min="0.01"
-                                required
-                            />
-                        </div>
-                        <div className="form-control">
-                            <label className="label">
-                                <span className="label-text">Height</span>
-                            </label>
-                            <input
-                                type="number"
-                                name="height"
-                                step="0.01"
-                                defaultValue={template.height}
-                                className="input-bordered input w-full"
-                                min="0.01"
-                                required
-                            />
-                        </div>
-                        <div className="form-control">
-                            <label className="label">
-                                <span className="label-text">DPI</span>
-                            </label>
-                            <input
-                                type="number"
-                                name="dpi"
-                                defaultValue={template.dpi}
-                                className="input-bordered input w-full"
-                                min="72"
-                                max="600"
-                                required
-                            />
-                        </div>
+                        <input
+                            type="hidden"
+                            name="width"
+                            value={template.width}
+                        />
+                        <input
+                            type="hidden"
+                            name="height"
+                            value={template.height}
+                        />
+                        <input
+                            type="hidden"
+                            name="unit"
+                            value={template.unit}
+                        />
+                        <input type="hidden" name="dpi" value={template.dpi} />
                         <div className="modal-action">
                             <button
                                 type="button"
