@@ -17,7 +17,7 @@ class TemplateController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return inertia('dashboard', [
+        return inertia('templates/index', [
             'templates' => $templates,
         ]);
     }

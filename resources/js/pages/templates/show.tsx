@@ -29,7 +29,7 @@ const show = ({ template }: ShowProps) => {
                 </Link>
             </div>
 
-            <div className="mb-4 flex items-center justify-between">
+            <div className="mb-4 flex items-center gap-4">
                 <h1 className="text-3xl font-bold">{template.name}</h1>
                 <EditTemplateModal template={template} />
             </div>
