@@ -49,7 +49,7 @@ const LogoutModal = ({ className }: { className?: string }) => {
             <dialog id="logout_modal" className="modal">
                 <div className="modal-box max-w-sm">
                     <h3 className="text-lg font-bold">Logout!</h3>
-                    <p className="py-4">Are you sure you want to logout?</p>
+                    <p className="pt-4">Are you sure you want to logout?</p>
                     <div className="modal-action">
                         <form method="dialog">
                             <button className="btn">Cancel</button>

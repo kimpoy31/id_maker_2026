@@ -12,8 +12,10 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int $creator_id
  * @property string $name
- * @property int $width_px
- * @property int $height_px
+ * @property float $width
+ * @property float $height
+ * @property string $unit
+ * @property int $dpi
  * @property object|null $canvas_json
  * @property string $visibility
  * @property Carbon|null $created_at
@@ -27,8 +29,10 @@ class Template extends Model
     protected $fillable = [
         'creator_id',
         'name',
-        'width_px',
-        'height_px',
+        'width',
+        'height',
+        'unit',
+        'dpi',
         'canvas_json',
         'visibility',
     ];
