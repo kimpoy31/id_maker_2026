@@ -62,4 +62,32 @@ class TemplateController extends Controller
 
         return redirect()->route('dashboard');
     }
+
+    /**
+     * Update the specified template.
+     */
+    public function update(Request $request, string $name)
+    {
+        $template = Template::where('name', $name)
+            ->where('creator_id', Auth::id())
+            ->firstOrFail();
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'width' => ['required', 'numeric', 'min:0.01'],
+            'height' => ['required', 'numeric', 'min:0.01'],
+            'unit' => ['required', 'in:px,in'],
+            'dpi' => ['required', 'integer', 'min:72', 'max:600'],
+        ]);
+
+        $template->update([
+            'name' => $validated['name'],
+            'width' => $validated['width'],
+            'height' => $validated['height'],
+            'unit' => $validated['unit'],
+            'dpi' => $validated['dpi'],
+        ]);
+
+        return redirect()->route('templates.show', ['name' => $template->name]);
+    }
 }

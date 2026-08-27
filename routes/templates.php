@@ -5,5 +5,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
     Route::get('/templates/{name}', [\App\Http\Controllers\TemplateController::class, 'show'])->name('templates.show');
+    Route::put('/templates/{name}', [\App\Http\Controllers\TemplateController::class, 'update'])->name('templates.update');
     Route::post('/templates', [\App\Http\Controllers\TemplateController::class, 'store'])->name('templates.store');
 });

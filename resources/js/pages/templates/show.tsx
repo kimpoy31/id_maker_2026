@@ -1,7 +1,8 @@
 import { dashboard } from '@/routes';
 import AuthenticatedLayout from '../../layouts/AuthenticatedLayout';
 import { PageProps } from '@inertiajs/core';
-import { Link, router } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
+import EditTemplateModal from '../../components/EditTemplateModal';
 
 interface Template {
     id: number;
@@ -28,7 +29,10 @@ const show = ({ template }: ShowProps) => {
                 </Link>
             </div>
 
-            <h1 className="mb-4 text-3xl font-bold">{template.name}</h1>
+            <div className="mb-4 flex items-center justify-between">
+                <h1 className="text-3xl font-bold">{template.name}</h1>
+                <EditTemplateModal template={template} />
+            </div>
 
             <div className="card bg-base-100 shadow-sm">
                 <div className="card-body">
