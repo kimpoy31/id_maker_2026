@@ -1,7 +1,7 @@
 import React from 'react';
 import { router } from '@inertiajs/react';
 import { logout } from '@/actions/App/Http/Controllers/AuthController';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 
 const AuthenticatedLayout = ({
     children,
@@ -10,6 +10,8 @@ const AuthenticatedLayout = ({
     children: React.ReactNode;
     className?: string;
 }) => {
+    const { auth } = usePage().props as any;
+    const isAdmin = auth.user.role === 'admin';
     return (
         <>
             <div className="drawer lg:drawer-open">
@@ -64,6 +66,11 @@ const AuthenticatedLayout = ({
                         <li>
                             <Link href="/templates">Templates</Link>
                         </li>
+                        {isAdmin && (
+                            <li>
+                                <Link href="/users">Users</Link>
+                            </li>
+                        )}
                     </ul>
                 </div>
             </div>
