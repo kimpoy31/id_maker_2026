@@ -27,3 +27,8 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/templates.php';
 require __DIR__.'/users.php';
+
+// Test route for canvas editor
+Route::get('/editor/templates/create', function () {
+    return Inertia::render('editor/templates/create');
+});
