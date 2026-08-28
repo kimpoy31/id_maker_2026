@@ -59,13 +59,10 @@ const index = ({ templates }: IndexProps) => {
                                 </td>
                                 <td>
                                     <a
-                                        href={
-                                            templatesRoute.show(template.name)
-                                                .url
-                                        }
+                                        href={`/templates/${template.name}`}
                                         className="btn btn-ghost btn-sm"
                                     >
-                                        View
+                                        Edit
                                     </a>
                                 </td>
                             </tr>

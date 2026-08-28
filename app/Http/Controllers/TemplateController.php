@@ -23,7 +23,7 @@ class TemplateController extends Controller
     }
 
     /**
-     * Display the specified template.
+     * Display the editor for the specified template.
      */
     public function show(Request $request, string $name)
     {
@@ -31,7 +31,7 @@ class TemplateController extends Controller
             ->where('creator_id', Auth::id())
             ->firstOrFail();
 
-        return inertia('templates/show', [
+        return inertia('editor/templates/edit', [
             'template' => $template,
         ]);
     }
