@@ -54,6 +54,7 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({
             ref={canvasRef}
             style={{
                 border: '1px solid #ccc',
+                backgroundColor: '#ffffff',
             }}
         />
     );
