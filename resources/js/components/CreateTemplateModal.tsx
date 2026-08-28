@@ -48,10 +48,59 @@ const CreateTemplateModal = ({ className }: { className?: string }) => {
                                 required
                             />
                         </div>
-                        <input type="hidden" name="width" value="1010" />
-                        <input type="hidden" name="height" value="639" />
-                        <input type="hidden" name="unit" value="px" />
-                        <input type="hidden" name="dpi" value="300" />
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Unit</span>
+                            </label>
+                            <select
+                                name="unit"
+                                className="select-bordered select w-full"
+                                required
+                            >
+                                <option value="px">Pixels (px)</option>
+                                <option value="in">Inches (in)</option>
+                            </select>
+                        </div>
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Width</span>
+                            </label>
+                            <input
+                                type="number"
+                                name="width"
+                                step="0.01"
+                                className="input-bordered input w-full"
+                                min="0.01"
+                                required
+                            />
+                        </div>
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Height</span>
+                            </label>
+                            <input
+                                type="number"
+                                name="height"
+                                step="0.01"
+                                className="input-bordered input w-full"
+                                min="0.01"
+                                required
+                            />
+                        </div>
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">DPI</span>
+                            </label>
+                            <input
+                                type="number"
+                                name="dpi"
+                                className="input-bordered input w-full"
+                                min="72"
+                                max="600"
+                                defaultValue="96"
+                                required
+                            />
+                        </div>
                         <div className="modal-action">
                             <button
                                 type="button"
