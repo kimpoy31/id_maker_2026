@@ -3,7 +3,7 @@ import CanvasEditor, {
     CanvasEditorRef,
 } from '../../../components/editor/CanvasEditor';
 import { PageProps } from '@inertiajs/core';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { router } from '@inertiajs/react';
 
 interface Template {
@@ -18,6 +18,14 @@ interface Template {
     created_at: string;
 }
 
+interface TextObject {
+    id: string;
+    text: string;
+    fontSize: number;
+    bold: boolean;
+    italic: boolean;
+}
+
 interface EditProps extends PageProps {
     template: Template;
 }
@@ -25,6 +33,8 @@ interface EditProps extends PageProps {
 const Edit = ({ template }: EditProps) => {
     const [name, setName] = useState(template.name);
     const [images, setImages] = useState<string[]>([]);
+    const [texts, setTexts] = useState<TextObject[]>([]);
+    const [selectedTextId, setSelectedTextId] = useState<string | null>(null);
     const canvasRef = useRef<CanvasEditorRef>(null);
 
     const handleSaveName = () => {
@@ -89,6 +99,106 @@ const Edit = ({ template }: EditProps) => {
         canvasRef.current?.addImage(imageSrc);
     };
 
+    const handleAddText = () => {
+        const newText: TextObject = {
+            id: `text${texts.length + 1}`,
+            text: `text${texts.length + 1}`,
+            fontSize: 24,
+            bold: false,
+            italic: false,
+        };
+        setTexts([...texts, newText]);
+        canvasRef.current?.addText(
+            newText.text,
+            newText.fontSize,
+            newText.id,
+            newText.bold,
+            newText.italic,
+        );
+    };
+
+    const handleTextChange = (id: string, newText: string) => {
+        setTexts(texts.map((t) => (t.id === id ? { ...t, text: newText } : t)));
+        canvasRef.current?.updateText(id, newText);
+    };
+
+    const handleTextClick = (id: string) => {
+        setSelectedTextId(id);
+        canvasRef.current?.selectObject(id);
+    };
+
+    const handleFontSizeChange = (id: string, delta: number) => {
+        setTexts(
+            texts.map((t) => {
+                if (t.id === id) {
+                    const newSize = Math.max(8, t.fontSize + delta);
+                    canvasRef.current?.updateFontSize(id, newSize);
+                    return { ...t, fontSize: newSize };
+                }
+                return t;
+            }),
+        );
+    };
+
+    const handleBoldToggle = (id: string) => {
+        setTexts(
+            texts.map((t) => {
+                if (t.id === id) {
+                    const newBold = !t.bold;
+                    canvasRef.current?.updateBold(id, newBold);
+                    return { ...t, bold: newBold };
+                }
+                return t;
+            }),
+        );
+    };
+
+    const handleItalicToggle = (id: string) => {
+        setTexts(
+            texts.map((t) => {
+                if (t.id === id) {
+                    const newItalic = !t.italic;
+                    canvasRef.current?.updateItalic(id, newItalic);
+                    return { ...t, italic: newItalic };
+                }
+                return t;
+            }),
+        );
+    };
+
+    useEffect(() => {
+        const handleTextSelected = (e: CustomEvent) => {
+            setSelectedTextId(e.detail);
+        };
+
+        const handleTextDeleted = (e: CustomEvent) => {
+            setTexts((prev) => prev.filter((t) => t.id !== e.detail));
+            if (selectedTextId === e.detail) {
+                setSelectedTextId(null);
+            }
+        };
+
+        window.addEventListener(
+            'textSelected',
+            handleTextSelected as EventListener,
+        );
+        window.addEventListener(
+            'textDeleted',
+            handleTextDeleted as EventListener,
+        );
+
+        return () => {
+            window.removeEventListener(
+                'textSelected',
+                handleTextSelected as EventListener,
+            );
+            window.removeEventListener(
+                'textDeleted',
+                handleTextDeleted as EventListener,
+            );
+        };
+    }, [selectedTextId]);
+
     return (
         <AuthenticatedLayout className="p-0!">
             <div className="flex items-center gap-4 p-6">
@@ -105,6 +215,88 @@ const Edit = ({ template }: EditProps) => {
 
             <div className="flex h-full">
                 <div className="w-64 border-r border-base-300 bg-base-300 p-4">
+                    <button
+                        onClick={handleAddText}
+                        className="btn mb-4 w-full btn-primary"
+                    >
+                        Add Text
+                    </button>
+
+                    {texts.length > 0 && (
+                        <div className="mb-4 space-y-2">
+                            <h2 className="text-lg font-bold">Text layers</h2>
+                            {texts.map((textObj) => (
+                                <div
+                                    key={textObj.id}
+                                    className={`rounded border p-2 ${selectedTextId === textObj.id ? 'border-primary bg-primary/10' : 'border-base-300'}`}
+                                    onClick={() => handleTextClick(textObj.id)}
+                                >
+                                    <input
+                                        type="text"
+                                        value={textObj.text}
+                                        onChange={(e) =>
+                                            handleTextChange(
+                                                textObj.id,
+                                                e.target.value,
+                                            )
+                                        }
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="input-bordered input mb-2 w-full input-sm"
+                                    />
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleFontSizeChange(
+                                                    textObj.id,
+                                                    -2,
+                                                );
+                                            }}
+                                            className="btn btn-xs"
+                                        >
+                                            -
+                                        </button>
+                                        <span className="text-sm">
+                                            {textObj.fontSize}px
+                                        </span>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleFontSizeChange(
+                                                    textObj.id,
+                                                    2,
+                                                );
+                                            }}
+                                            className="btn btn-xs"
+                                        >
+                                            +
+                                        </button>
+                                    </div>
+                                    <div className="mt-2 flex items-center gap-2">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleBoldToggle(textObj.id);
+                                            }}
+                                            className={`btn btn-xs ${textObj.bold ? 'btn-primary' : ''}`}
+                                        >
+                                            Bold
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleItalicToggle(textObj.id);
+                                            }}
+                                            className={`btn btn-xs ${textObj.italic ? 'btn-primary' : ''}`}
+                                        >
+                                            Italic
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
                     <h2 className="mb-4 text-lg font-bold">Images</h2>
 
                     <div
