@@ -86,11 +86,27 @@ const CanvasEditor = forwardRef<CanvasEditorRef, CanvasEditorProps>(
                 width: convertedWidth,
                 height: convertedHeight,
                 backgroundColor: '#f5f5f5',
+                viewportTransform: [1, 0, 0, 1, 0, 0],
             });
+
+            // Add keyboard event listener for delete key
+            const handleKeyDown = (e: KeyboardEvent) => {
+                if (e.key === 'Delete' || e.key === 'Backspace') {
+                    const activeObject = canvas.getActiveObject();
+                    if (activeObject) {
+                        canvas.remove(activeObject);
+                        canvas.discardActiveObject();
+                        canvas.renderAll();
+                    }
+                }
+            };
+
+            window.addEventListener('keydown', handleKeyDown);
 
             fabricCanvasRef.current = canvas;
 
             return () => {
+                window.removeEventListener('keydown', handleKeyDown);
                 fabricCanvasRef.current?.dispose();
                 fabricCanvasRef.current = null;
             };
