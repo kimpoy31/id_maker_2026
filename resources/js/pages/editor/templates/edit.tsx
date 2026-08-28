@@ -1,7 +1,9 @@
 import AuthenticatedLayout from '../../../layouts/AuthenticatedLayout';
-import CanvasEditor from '../../../components/editor/CanvasEditor';
+import CanvasEditor, {
+    CanvasEditorRef,
+} from '../../../components/editor/CanvasEditor';
 import { PageProps } from '@inertiajs/core';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { router } from '@inertiajs/react';
 
 interface Template {
@@ -23,6 +25,7 @@ interface EditProps extends PageProps {
 const Edit = ({ template }: EditProps) => {
     const [name, setName] = useState(template.name);
     const [images, setImages] = useState<string[]>([]);
+    const canvasRef = useRef<CanvasEditorRef>(null);
 
     const handleSaveName = () => {
         const formData = new FormData();
@@ -78,6 +81,14 @@ const Edit = ({ template }: EditProps) => {
         e.preventDefault();
     };
 
+    const handleImageDragStart = (e: React.DragEvent, imageSrc: string) => {
+        e.dataTransfer.setData('image', imageSrc);
+    };
+
+    const handleImageClick = (imageSrc: string) => {
+        canvasRef.current?.addImage(imageSrc);
+    };
+
     return (
         <AuthenticatedLayout className="p-0!">
             <div className="flex items-center gap-4 p-6">
@@ -125,6 +136,10 @@ const Edit = ({ template }: EditProps) => {
                                 key={index}
                                 className="group relative cursor-move"
                                 draggable
+                                onDragStart={(e) =>
+                                    handleImageDragStart(e, image)
+                                }
+                                onClick={() => handleImageClick(image)}
                             >
                                 <img
                                     src={image}
@@ -132,11 +147,12 @@ const Edit = ({ template }: EditProps) => {
                                     className="h-24 w-full rounded border border-base-300 object-cover"
                                 />
                                 <button
-                                    onClick={() =>
+                                    onClick={(e) => {
+                                        e.stopPropagation();
                                         setImages((prev) =>
                                             prev.filter((_, i) => i !== index),
-                                        )
-                                    }
+                                        );
+                                    }}
                                     className="btn absolute top-1 right-1 opacity-0 transition-opacity btn-error btn-xs group-hover:opacity-100"
                                 >
                                     ×
@@ -148,6 +164,7 @@ const Edit = ({ template }: EditProps) => {
 
                 <div className="flex w-full flex-1 items-center justify-center bg-base-200 p-6">
                     <CanvasEditor
+                        ref={canvasRef}
                         widthPx={template.width}
                         heightPx={template.height}
                         unit={template.unit as 'px' | 'mm' | 'in'}

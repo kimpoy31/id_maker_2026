@@ -1,4 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, {
+    useEffect,
+    useRef,
+    useImperativeHandle,
+    forwardRef,
+} from 'react';
 import * as fabric from 'fabric';
 
 interface CanvasEditorProps {
@@ -7,57 +12,116 @@ interface CanvasEditorProps {
     unit: 'px' | 'mm' | 'in';
 }
 
-const CanvasEditor: React.FC<CanvasEditorProps> = ({
-    widthPx,
-    heightPx,
-    unit,
-}) => {
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
+export interface CanvasEditorRef {
+    addImage: (imageSrc: string) => void;
+}
 
-    useEffect(() => {
-        if (!canvasRef.current) {
-            return;
-        }
+const CanvasEditor = forwardRef<CanvasEditorRef, CanvasEditorProps>(
+    ({ widthPx, heightPx, unit }, ref) => {
+        const canvasRef = useRef<HTMLCanvasElement>(null);
+        const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
 
-        // Unit conversion using 96 DPI
-        let convertedWidth = widthPx;
-        let convertedHeight = heightPx;
+        const addImageToCanvas = (imageSrc: string) => {
+            if (!fabricCanvasRef.current) return;
 
-        if (unit !== 'px') {
-            const dpi = 96;
-            if (unit === 'in') {
-                convertedWidth = widthPx * dpi;
-                convertedHeight = heightPx * dpi;
-            } else if (unit === 'mm') {
-                convertedWidth = (widthPx * dpi) / 25.4;
-                convertedHeight = (heightPx * dpi) / 25.4;
-            }
-        }
+            fabric.Image.fromURL(imageSrc)
+                .then((img) => {
+                    if (!fabricCanvasRef.current) return;
 
-        const canvas = new fabric.Canvas(canvasRef.current, {
-            width: convertedWidth,
-            height: convertedHeight,
-            backgroundColor: '#f5f5f5',
-        });
+                    // Scale image to fit within canvas if too large
+                    const maxWidth = fabricCanvasRef.current.width * 0.8;
+                    const maxHeight = fabricCanvasRef.current.height * 0.8;
 
-        fabricCanvasRef.current = canvas;
+                    if (img.width! > maxWidth || img.height! > maxHeight) {
+                        const scale = Math.min(
+                            maxWidth / img.width!,
+                            maxHeight / img.height!,
+                        );
+                        img.scale(scale);
+                    }
 
-        return () => {
-            fabricCanvasRef.current?.dispose();
-            fabricCanvasRef.current = null;
+                    img.set({
+                        left:
+                            fabricCanvasRef.current.width / 2 -
+                            (img.width! * img.scaleX!) / 2,
+                        top:
+                            fabricCanvasRef.current.height / 2 -
+                            (img.height! * img.scaleY!) / 2,
+                    });
+
+                    fabricCanvasRef.current.add(img);
+                    fabricCanvasRef.current.setActiveObject(img);
+                    fabricCanvasRef.current.renderAll();
+                })
+                .catch((err) => {
+                    console.error('Error loading image:', err);
+                });
         };
-    }, [widthPx, heightPx, unit]);
 
-    return (
-        <canvas
-            ref={canvasRef}
-            style={{
-                border: '1px solid #ccc',
-                backgroundColor: '#ffffff',
-            }}
-        />
-    );
-};
+        useImperativeHandle(ref, () => ({
+            addImage: addImageToCanvas,
+        }));
+
+        useEffect(() => {
+            if (!canvasRef.current) {
+                return;
+            }
+
+            // Unit conversion using 96 DPI
+            let convertedWidth = widthPx;
+            let convertedHeight = heightPx;
+
+            if (unit !== 'px') {
+                const dpi = 96;
+                if (unit === 'in') {
+                    convertedWidth = widthPx * dpi;
+                    convertedHeight = heightPx * dpi;
+                } else if (unit === 'mm') {
+                    convertedWidth = (widthPx * dpi) / 25.4;
+                    convertedHeight = (heightPx * dpi) / 25.4;
+                }
+            }
+
+            const canvas = new fabric.Canvas(canvasRef.current, {
+                width: convertedWidth,
+                height: convertedHeight,
+                backgroundColor: '#f5f5f5',
+            });
+
+            fabricCanvasRef.current = canvas;
+
+            return () => {
+                fabricCanvasRef.current?.dispose();
+                fabricCanvasRef.current = null;
+            };
+        }, [widthPx, heightPx, unit]);
+
+        const handleDragOver = (e: React.DragEvent) => {
+            e.preventDefault();
+        };
+
+        const handleDrop = (e: React.DragEvent) => {
+            e.preventDefault();
+            const imageData = e.dataTransfer.getData('image');
+            console.log('Drop received:', imageData);
+            if (imageData) {
+                addImageToCanvas(imageData);
+            }
+        };
+
+        return (
+            <canvas
+                ref={canvasRef}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+                style={{
+                    border: '1px solid #ccc',
+                }}
+            />
+        );
+    },
+);
+
+CanvasEditor.displayName = 'CanvasEditor';
 
 export default CanvasEditor;
