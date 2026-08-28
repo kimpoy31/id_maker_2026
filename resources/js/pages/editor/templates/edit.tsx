@@ -31,7 +31,7 @@ const Edit = ({ template }: EditProps) => {
         formData.append('unit', template.unit);
         formData.append('dpi', template.dpi.toString());
 
-        router.put(`/templates/${template.name}`, formData);
+        router.put(`/templates/${template.id}`, formData);
     };
 
     return (

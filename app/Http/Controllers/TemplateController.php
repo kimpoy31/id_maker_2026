@@ -66,9 +66,9 @@ class TemplateController extends Controller
     /**
      * Update the specified template.
      */
-    public function update(Request $request, string $name)
+    public function update(Request $request, int $id)
     {
-        $template = Template::where('name', $name)
+        $template = Template::where('id', $id)
             ->where('creator_id', Auth::id())
             ->firstOrFail();
 
