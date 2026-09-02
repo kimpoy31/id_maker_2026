@@ -23,3 +23,6 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
+
+require __DIR__ . '/templates.php';
+require __DIR__ . '/users.php';
