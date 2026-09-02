@@ -16,7 +16,7 @@ const AuthenticatedLayout = ({
     };
 
     return (
-        <div className={`min-h-screen ${className}`}>
+        <div className="min-h-screen">
             <div className="navbar justify-between bg-base-100 shadow-xs">
                 <div>
                     <a className="btn btn-ghost text-xl">Lanyard</a>
@@ -48,7 +48,7 @@ const AuthenticatedLayout = ({
                     <LogoutModal className="btn-sm" />
                 </div>
             </div>
-            {children}
+            <div className={`${className} p-4`}>{children}</div>
         </div>
     );
 };

@@ -12,14 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('templates', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('creator_id')->constrained('users')->cascadeOnDelete();
-        $table->string('name');
-        $table->integer('width_px');
-        $table->integer('height_px');
-        $table->json('canvas_json')->nullable();
-        $table->enum('visibility', ['private', 'shared', 'global'])->default('private');
-        $table->timestamps();
+            $table->id();
+            $table->foreignId('creator_id')->constrained('users')->cascadeOnDelete();
+            $table->string('name');
+            $table->integer('width');
+            $table->integer('height');
+            $table->integer('dpi')->default(300);
+            $table->enum('unit', ['inches', 'pixels'])->default('inches');
+            $table->json('canvas_json')->nullable();
+            $table->enum('visibility', ['private', 'shared', 'global'])->default('private');
+            $table->timestamps();
         });
     }
 

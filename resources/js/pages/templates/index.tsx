@@ -1,9 +1,10 @@
 import AuthenticatedLayout from '@/layouts/AuthenticatedLayout';
+import TemplateForm from './components/TemplateForm';
 
 const TemplatesPage = () => {
     return (
         <AuthenticatedLayout>
-            <div>TemplatesPage</div>
+            <TemplateForm />
         </AuthenticatedLayout>
     );
 };
