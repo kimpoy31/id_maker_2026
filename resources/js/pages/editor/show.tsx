@@ -1,12 +1,13 @@
 import AuthenticatedLayout from '@/layouts/AuthenticatedLayout';
 import type { Template } from '@/types/template';
+import EditorLayout from './Layout/EditorLayout';
 
 const EditorPage = ({ template }: { template: Template }) => {
     return (
-        <AuthenticatedLayout>
-            <div className="mx-auto w-full max-w-4xl">
+        <AuthenticatedLayout className="p-0!">
+            <EditorLayout>
                 <div>{template.name}</div>
-            </div>
+            </EditorLayout>
         </AuthenticatedLayout>
     );
 };
