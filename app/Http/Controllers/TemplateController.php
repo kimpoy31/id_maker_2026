@@ -26,6 +26,8 @@ class TemplateController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorizeEditorOrAdmin();
+
         $validated = $request->validate([
             'name'   => 'required|string|max:255',
             'width'  => 'required|numeric|min:0.01',
@@ -53,5 +55,15 @@ class TemplateController extends Controller
         ]);
 
         return to_route('editor.show', $template->id);
+    }
+
+    /**
+     * Ensure the current user is an editor or admin.
+     */
+    private function authorizeEditorOrAdmin(): void
+    {
+        if (!in_array(Auth::user()->role, ['editor', 'admin'], true)) {
+            abort(403, 'Access denied. Editor or admin only.');
+        }
     }
 }
