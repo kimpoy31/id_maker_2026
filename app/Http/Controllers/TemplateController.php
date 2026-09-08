@@ -52,6 +52,6 @@ class TemplateController extends Controller
             'visibility' => 'private',
         ]);
 
-        return redirect()->route('dashboard');
+        return to_route('editor.show', $template->id);
     }
 }
