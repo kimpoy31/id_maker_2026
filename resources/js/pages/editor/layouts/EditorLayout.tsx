@@ -6,12 +6,12 @@ const EditorLayout = ({ children }: { children: React.ReactNode }) => {
     return (
         <div className="flex h-[calc(100vh-64px)]">
             {/* Mobile sidebar toggle */}
-            <button
+            {/* <button
                 className="btn fixed top-20 left-4 z-50 lg:hidden"
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             >
                 {isSidebarOpen ? 'Close' : 'Menu'}
-            </button>
+            </button> */}
 
             {/* Sidebar */}
             <aside
