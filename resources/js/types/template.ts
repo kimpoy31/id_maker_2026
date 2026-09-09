@@ -27,8 +27,10 @@ export type TemplateWithRelations = Template & {
 
 export type TemplateFormData = {
     name: string;
-    width_px: number;
-    height_px: number;
+    width: number;
+    height: number;
+    unit: 'inches' | 'pixels';
+    dpi: number;
     canvas_json?: unknown;
     visibility?: TemplateVisibility;
 };

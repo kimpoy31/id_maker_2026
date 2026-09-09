@@ -1,24 +1,22 @@
+import { Template } from '@/types';
 import React, { useState } from 'react';
 
-const EditorLayout = ({ children }: { children: React.ReactNode }) => {
+const EditorLayout = ({
+    children,
+    template,
+}: {
+    children: React.ReactNode;
+    template: Template;
+}) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     return (
-        <div className="flex h-[calc(100vh-64px)]">
-            {/* Mobile sidebar toggle */}
-            {/* <button
-                className="btn fixed top-20 left-4 z-50 lg:hidden"
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            >
-                {isSidebarOpen ? 'Close' : 'Menu'}
-            </button> */}
-
+        <div className="flex h-[calc(100vh-64px)] min-h-0">
             {/* Sidebar */}
             <aside
                 className={`fixed z-40 h-full w-80 bg-base-200 transition-transform lg:relative ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'} `}
             >
                 <ul className="menu h-full p-4">
-                    {/* Sidebar content here */}
                     <li>
                         <a>Sidebar Item 1</a>
                     </li>
@@ -37,7 +35,9 @@ const EditorLayout = ({ children }: { children: React.ReactNode }) => {
             )}
 
             {/* Main content */}
-            <main className="flex-1 overflow-auto p-4 lg:p-6">{children}</main>
+            <main className="min-w-0 flex-1 overflow-auto p-4 lg:p-6">
+                {children}
+            </main>
         </div>
     );
 };

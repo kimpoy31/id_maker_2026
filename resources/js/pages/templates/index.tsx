@@ -20,11 +20,18 @@ const TemplatesPage = ({ templates }: { templates: Template[] }) => {
                             <div className="card-body">
                                 <h2 className="card-title">{template.name}</h2>
                                 <p>
-                                    {convertUnit(template.width, template.unit)}{' '}
+                                    {template.unit === 'pixels'
+                                        ? template.width
+                                        : convertUnit(
+                                              template.width,
+                                              template.unit,
+                                              template.dpi,
+                                          )}{' '}
                                     x{' '}
                                     {convertUnit(
                                         template.height,
                                         template.unit,
+                                        template.dpi,
                                     )}{' '}
                                     {template.unit}
                                 </p>
