@@ -6,8 +6,10 @@ export type Template = {
     id: number;
     creator_id: number;
     name: string;
-    width_px: number;
-    height_px: number;
+    width: number;
+    height: number;
+    unit: 'inches' | 'pixels';
+    dpi: number;
     canvas_json: unknown | null;
     visibility: TemplateVisibility;
     created_at: string;
@@ -25,8 +27,10 @@ export type TemplateWithRelations = Template & {
 
 export type TemplateFormData = {
     name: string;
-    width_px: number;
-    height_px: number;
+    width: number;
+    height: number;
+    unit: 'inches' | 'pixels';
+    dpi: number;
     canvas_json?: unknown;
     visibility?: TemplateVisibility;
 };

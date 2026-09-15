@@ -1,7 +1,7 @@
 import React from 'react';
-import { router } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { logout } from '@/actions/App/Http/Controllers/AuthController';
-import { Link, usePage } from '@inertiajs/react';
+import { dashboard, templates, users } from '@/routes';
 
 const AuthenticatedLayout = ({
     children,
@@ -10,71 +10,46 @@ const AuthenticatedLayout = ({
     children: React.ReactNode;
     className?: string;
 }) => {
-    const { auth } = usePage().props as any;
-    const isAdmin = auth.user.role === 'admin';
+    const isCurrentRoute = (route: string) => {
+        const { url } = usePage();
+        return url === route;
+    };
+
     return (
-        <>
-            <div className="drawer lg:drawer-open">
-                <input
-                    id="my-drawer-3"
-                    type="checkbox"
-                    className="drawer-toggle"
-                />
-                <div className="drawer-content flex flex-col items-center justify-center">
-                    <div className="min-h-screen w-full">
-                        <div className="navbar bg-base-100 shadow-xs">
-                            <div className="flex-none lg:hidden">
-                                <label
-                                    htmlFor="my-drawer-3"
-                                    className="btn btn-square btn-ghost"
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        className="inline-block h-5 w-5 stroke-current"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M4 6h16M4 12h16M4 18h16"
-                                        />
-                                    </svg>
-                                </label>
-                            </div>
-                            <div className="flex-1">
-                                <a className="btn btn-ghost text-xl">Lanyard</a>
-                            </div>
-                            <div className="flex-none">
-                                <LogoutModal className="btn-sm" />
-                            </div>
-                        </div>
-                        <div className={`${className} p-6`}>{children}</div>
-                    </div>
+        <div className="min-h-screen">
+            <div className="navbar justify-between bg-base-100 shadow-xs">
+                <div>
+                    <a className="btn btn-ghost text-xl">Lanyard</a>
                 </div>
-                <div className="drawer-side">
-                    <label
-                        htmlFor="my-drawer-3"
-                        aria-label="close sidebar"
-                        className="drawer-overlay"
-                    ></label>
-                    <ul className="menu min-h-full w-64 bg-base-200 p-4">
-                        <li>
-                            <Link href="/dashboard">Dashboard</Link>
-                        </li>
-                        <li>
-                            <Link href="/templates">Templates</Link>
-                        </li>
-                        {isAdmin && (
-                            <li>
-                                <Link href="/users">Users</Link>
-                            </li>
-                        )}
-                    </ul>
+                <div className="flex gap-2">
+                    <Link
+                        href={dashboard()}
+                        className={`btn btn-ghost btn-sm ${isCurrentRoute(dashboard().url) ? 'btn-active' : ''}`}
+                        prefetch
+                    >
+                        Dashboard
+                    </Link>
+                    <Link
+                        href={templates()}
+                        className={`btn btn-ghost btn-sm ${isCurrentRoute(templates().url) ? 'btn-active' : ''}`}
+                        prefetch
+                    >
+                        Templates
+                    </Link>
+                    <Link
+                        href={users()}
+                        className={`btn btn-ghost btn-sm ${isCurrentRoute('/users') ? 'btn-active' : ''}`}
+                        prefetch
+                    >
+                        Users
+                    </Link>
+                </div>
+                <div className="flex-none">
+                    <LogoutModal className="btn-sm" />
                 </div>
             </div>
-        </>
+            <div className={`${className} p-4`}>{children}</div>
+        </div>
     );
 };
 

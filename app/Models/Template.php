@@ -31,8 +31,8 @@ class Template extends Model
         'name',
         'width',
         'height',
-        'unit',
         'dpi',
+        'unit',
         'canvas_json',
         'visibility',
     ];

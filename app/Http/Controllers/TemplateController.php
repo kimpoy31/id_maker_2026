@@ -2,92 +2,68 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Template;
 use Illuminate\Http\Request;
+use App\Models\Template;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class TemplateController extends Controller
 {
-    /**
-     * Display a listing of templates.
-     */
-    public function index(Request $request)
+    public function index()
     {
-        $templates = Template::where('creator_id', Auth::id())
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $this->authorize('viewAny', Template::class);
 
-        return inertia('templates/index', [
+        $user = Auth::user();
+
+        $templates = $user->role === 'admin'
+            ? Template::all()
+            : Template::where('creator_id', $user->id)->get();
+
+        return Inertia::render('templates/index', [
             'templates' => $templates,
         ]);
     }
 
-    /**
-     * Display the editor for the specified template.
-     */
-    public function show(Request $request, string $name)
-    {
-        $template = Template::where('name', $name)
-            ->where('creator_id', Auth::id())
-            ->firstOrFail();
-
-        return inertia('editor/templates/edit', [
-            'template' => $template,
-        ]);
-    }
-
-    /**
-     * Store a newly created template.
-     */
     public function store(Request $request)
     {
+        $this->authorizeEditorOrAdmin();
+
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'width' => ['required', 'numeric', 'min:0.01'],
-            'height' => ['required', 'numeric', 'min:0.01'],
-            'unit' => ['required', 'in:px,in'],
-            'dpi' => ['required', 'integer', 'min:72', 'max:600'],
+            'name'   => 'required|string|max:255',
+            'width'  => 'required|numeric|min:0.01',
+            'height' => 'required|numeric|min:0.01',
+            'dpi'    => 'required|integer|min:1',
+            'unit'   => 'required|in:in,px',
         ]);
 
-        Template::create([
+        if ($validated['unit'] === 'in') {
+            $widthPx  = (int) round($validated['width'] * $validated['dpi']);
+            $heightPx = (int) round($validated['height'] * $validated['dpi']);
+        } else {
+            $widthPx  = (int) round($validated['width']);
+            $heightPx = (int) round($validated['height']);
+        }
+
+        $template = Template::create([
             'creator_id' => Auth::id(),
-            'name' => $validated['name'],
-            'width' => $validated['width'],
-            'height' => $validated['height'],
-            'unit' => $validated['unit'],
-            'dpi' => $validated['dpi'],
+            'name'       => $validated['name'],
+            'width'   => $widthPx,
+            'height'  => $heightPx,
+            'dpi'        => $validated['dpi'],
+            'unit' => $validated['unit'] === 'in' ? 'inches' : 'pixels',
             'visibility' => 'private',
-            'canvas_json' => null,
         ]);
 
-        return redirect()->route('dashboard');
+        return to_route('editor.show', $template->id);
     }
 
     /**
-     * Update the specified template.
+     * Ensure the current user is an editor or admin.
      */
-    public function update(Request $request, int $id)
+    private function authorizeEditorOrAdmin(): void
     {
-        $template = Template::where('id', $id)
-            ->where('creator_id', Auth::id())
-            ->firstOrFail();
-
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'width' => ['required', 'numeric', 'min:0.01'],
-            'height' => ['required', 'numeric', 'min:0.01'],
-            'unit' => ['required', 'in:px,in'],
-            'dpi' => ['required', 'integer', 'min:72', 'max:600'],
-        ]);
-
-        $template->update([
-            'name' => $validated['name'],
-            'width' => $validated['width'],
-            'height' => $validated['height'],
-            'unit' => $validated['unit'],
-            'dpi' => $validated['dpi'],
-        ]);
-
-        return redirect()->route('templates.show', ['name' => $template->name]);
+        if (!in_array(Auth::user()->role, ['editor', 'admin'], true)) {
+            abort(403, 'Access denied. Editor or admin only.');
+        }
     }
 }

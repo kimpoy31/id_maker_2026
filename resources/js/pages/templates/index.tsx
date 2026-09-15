@@ -1,83 +1,47 @@
-import AuthenticatedLayout from '../../layouts/AuthenticatedLayout';
-import CreateTemplateModal from '../../components/CreateTemplateModal';
-import { PageProps } from '@inertiajs/core';
-import templatesRoute from '@/routes/templates';
+import AuthenticatedLayout from '@/layouts/AuthenticatedLayout';
+import TemplateForm from './components/TemplateForm';
+import type { Template } from '@/types/template';
+import { convertUnit } from '@/lib/conversion';
+import { Link } from '@inertiajs/react';
+import editor from '@/routes/editor';
 
-interface Template {
-    id: number;
-    name: string;
-    width: number;
-    height: number;
-    unit: string;
-    dpi: number;
-    visibility: string;
-    created_at: string;
-}
-
-interface IndexProps extends PageProps {
-    templates: Template[];
-}
-
-const index = ({ templates }: IndexProps) => {
+const TemplatesPage = ({ templates }: { templates: Template[] }) => {
     return (
         <AuthenticatedLayout>
-            <div className="mb-6 flex items-center justify-between">
-                <h1 className="text-3xl font-bold">Templates</h1>
-                <CreateTemplateModal className="btn-sm" />
-            </div>
-
-            <div className="overflow-x-auto">
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Dimensions</th>
-                            <th>DPI</th>
-                            <th>Visibility</th>
-                            <th>Created</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {templates.map((template) => (
-                            <tr key={template.id}>
-                                <td className="font-medium">{template.name}</td>
-                                <td>
-                                    {template.width} × {template.height}{' '}
+            <div className="mx-auto w-full max-w-4xl">
+                <TemplateForm />
+                <div className="mt-4 flex gap-4">
+                    {templates.map((template) => (
+                        <Link
+                            className="card w-full max-w-xs bg-base-100 shadow-sm"
+                            key={template.id}
+                            href={editor.show(template.id)}
+                        >
+                            <div className="card-body">
+                                <h2 className="card-title">{template.name}</h2>
+                                <p>
+                                    {template.unit === 'pixels'
+                                        ? template.width
+                                        : convertUnit(
+                                              template.width,
+                                              template.unit,
+                                              template.dpi,
+                                          )}{' '}
+                                    x{' '}
+                                    {convertUnit(
+                                        template.height,
+                                        template.unit,
+                                        template.dpi,
+                                    )}{' '}
                                     {template.unit}
-                                </td>
-                                <td>{template.dpi}</td>
-                                <td>
-                                    <span className="badge badge-outline">
-                                        {template.visibility}
-                                    </span>
-                                </td>
-                                <td>
-                                    {new Date(
-                                        template.created_at,
-                                    ).toLocaleDateString()}
-                                </td>
-                                <td>
-                                    <a
-                                        href={`/templates/${template.name}`}
-                                        className="btn btn-ghost btn-sm"
-                                    >
-                                        Edit
-                                    </a>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-
-            {templates.length === 0 && (
-                <div className="py-12 text-center text-base-content/50">
-                    <p>No templates yet. Create your first template!</p>
+                                </p>
+                            </div>
+                        </Link>
+                    ))}
                 </div>
-            )}
+            </div>
         </AuthenticatedLayout>
     );
 };
 
-export default index;
+export default TemplatesPage;
