@@ -1,5 +1,6 @@
 import { Template } from '@/types';
 import { convertUnit } from '@/lib/conversion';
+<<<<<<< HEAD
 import React, { useEffect, useRef, useState } from 'react';
 import * as fabric from 'fabric';
 
@@ -11,6 +12,14 @@ const EditorCanvas = ({ template }: { template: Template }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [zoom, setZoom] = useState(100);
     const [fitMode, setFitMode] = useState<FitMode>('fit');
+=======
+import React, { useEffect, useRef } from 'react';
+import * as fabric from 'fabric';
+
+const EditorCanvas = ({ template }: { template: Template }) => {
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
+>>>>>>> feat/template-creation
 
     const pixelWidth = convertUnit(template.width, template.unit, template.dpi);
     const pixelHeight = convertUnit(
@@ -19,6 +28,7 @@ const EditorCanvas = ({ template }: { template: Template }) => {
         template.dpi,
     );
 
+<<<<<<< HEAD
     const calculateFitZoom = () => {
         if (!containerRef.current) return 100;
         const containerWidth = containerRef.current.clientWidth - 32; // Account for padding
@@ -50,6 +60,8 @@ const EditorCanvas = ({ template }: { template: Template }) => {
         }
     };
 
+=======
+>>>>>>> feat/template-creation
     useEffect(() => {
         if (!canvasRef.current) {
             return;
@@ -69,6 +81,7 @@ const EditorCanvas = ({ template }: { template: Template }) => {
         };
     }, [pixelWidth, pixelHeight]);
 
+<<<<<<< HEAD
     useEffect(() => {
         if (!fabricCanvasRef.current) return;
 
@@ -177,6 +190,16 @@ const EditorCanvas = ({ template }: { template: Template }) => {
                     }}
                 />
             </div>
+=======
+    return (
+        <div className="h-full w-full min-w-0 overflow-auto">
+            <canvas
+                ref={canvasRef}
+                style={{
+                    border: '1px solid #ccc',
+                }}
+            />
+>>>>>>> feat/template-creation
         </div>
     );
 };

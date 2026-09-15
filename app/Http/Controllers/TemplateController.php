@@ -47,10 +47,10 @@ class TemplateController extends Controller
         $template = Template::create([
             'creator_id' => Auth::id(),
             'name'       => $validated['name'],
-            'width'   => $widthPx,
-            'height'  => $heightPx,
+            'width_px'   => $widthPx,
+            'height_px'  => $heightPx,
             'dpi'        => $validated['dpi'],
-            'unit' => $validated['unit'] === 'in' ? 'inches' : 'pixels',
+            'input_unit' => $validated['unit'] === 'in' ? 'inches' : 'pixels',
             'visibility' => 'private',
         ]);
 
