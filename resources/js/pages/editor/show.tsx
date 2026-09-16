@@ -4,6 +4,7 @@ import EditorLayout from './layouts/EditorLayout';
 import CanvasEditor from '@/components/editor/CanvasEditor';
 import { useRef } from 'react';
 import { router } from '@inertiajs/react';
+import { convertUnit } from '@/lib/conversion';
 
 const EditorPage = ({ template }: { template: Template }) => {
     const canvasRef = useRef<any>(null);
@@ -14,12 +15,12 @@ const EditorPage = ({ template }: { template: Template }) => {
         });
     };
 
-    const pixelWidth =
-        template.unit === 'in' ? template.width * template.dpi : template.width;
-    const pixelHeight =
-        template.unit === 'in'
-            ? template.height * template.dpi
-            : template.height;
+    const pixelWidth = convertUnit(template.width, template.unit, template.dpi);
+    const pixelHeight = convertUnit(
+        template.height,
+        template.unit,
+        template.dpi,
+    );
 
     return (
         <AuthenticatedLayout className="p-0!">

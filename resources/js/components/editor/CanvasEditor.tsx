@@ -218,21 +218,9 @@ const CanvasEditor = forwardRef<CanvasEditorRef, CanvasEditorProps>(
                 return;
             }
 
-            // Unit conversion using 96 DPI
-            let convertedWidth = widthPx;
-            let convertedHeight = heightPx;
-
-            if (unit !== 'px') {
-                const dpi = 96;
-                if (unit === 'in') {
-                    convertedWidth = widthPx * dpi;
-                    convertedHeight = heightPx * dpi;
-                }
-            }
-
             const canvas = new fabric.Canvas(canvasRef.current, {
-                width: convertedWidth,
-                height: convertedHeight,
+                width: widthPx,
+                height: heightPx,
                 backgroundColor: '#f5f5f5',
                 viewportTransform: [1, 0, 0, 1, 0, 0],
             });
@@ -298,7 +286,7 @@ const CanvasEditor = forwardRef<CanvasEditorRef, CanvasEditorProps>(
                 fabricCanvasRef.current?.dispose();
                 fabricCanvasRef.current = null;
             };
-        }, [widthPx, heightPx, unit]);
+        }, [widthPx, heightPx]);
 
         const handleDragOver = (e: React.DragEvent) => {
             e.preventDefault();

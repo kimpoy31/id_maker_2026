@@ -1,14 +1,14 @@
 export type TemplateUnit = 'in' | 'px';
 
 /**
- * Converts a template's stored width or height value into real pixels.
+ * Converts a template's stored width or height value into pixels.
  * If the template's unit is 'in', multiplies by dpi to get pixels.
  * If the unit is 'px', returns the value unchanged.
  */
 export function convertUnit(
-    valueInPixels: number,
+    value: number,
     unit: TemplateUnit,
     dpi: number,
 ): number {
-    return unit === 'in' ? valueInPixels / dpi : valueInPixels;
+    return unit === 'in' ? value * dpi : value;
 }
