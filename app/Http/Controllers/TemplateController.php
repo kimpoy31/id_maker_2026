@@ -49,6 +49,48 @@ class TemplateController extends Controller
         return to_route('editor.show', $template->id);
     }
 
+    public function show(Template $template)
+    {
+        $this->authorize('view', $template);
+
+        return Inertia::render('editor/show', [
+            'template' => $template,
+        ]);
+    }
+
+    public function update(Request $request, Template $template)
+    {
+        $this->authorize('update', $template);
+
+        $validated = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'width' => 'sometimes|required|numeric|min:0.01',
+            'height' => 'sometimes|required|numeric|min:0.01',
+            'dpi' => 'sometimes|required|integer|min:1',
+            'unit' => 'sometimes|required|in:in,px',
+            'canvas_json' => 'nullable|string',
+        ]);
+
+        // Handle canvas_json separately since it needs JSON decoding
+        $updateData = $validated;
+        if (isset($validated['canvas_json'])) {
+            $updateData['canvas_json'] = json_decode($validated['canvas_json'], true);
+        }
+
+        $template->update($updateData);
+
+        return back();
+    }
+
+    public function destroy(Template $template)
+    {
+        $this->authorize('delete', $template);
+
+        $template->delete();
+
+        return to_route('templates');
+    }
+
     /**
      * Ensure the current user is an editor or admin.
      */

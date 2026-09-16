@@ -5,6 +5,7 @@ import { SettingsIcon } from '../icons';
 
 interface EditTemplateModalProps {
     template: {
+        id: number;
         name: string;
         width: number;
         height: number;
@@ -18,7 +19,7 @@ const EditTemplateModal = ({ template }: EditTemplateModalProps) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
 
-        router.put(templates.update(template.name), formData, {
+        router.put(templates.update(template.id), formData, {
             onSuccess: () => {
                 (
                     document.getElementById(

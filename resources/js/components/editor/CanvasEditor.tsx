@@ -10,6 +10,9 @@ interface CanvasEditorProps {
     widthPx: number;
     heightPx: number;
     unit: 'px' | 'in';
+    canvasJson?: unknown;
+    onSave?: (canvasJson: unknown) => void;
+    imageUploadUrl?: string;
 }
 
 export interface CanvasEditorRef {
@@ -26,15 +29,43 @@ export interface CanvasEditorRef {
     updateFontSize: (id: string, newSize: number) => void;
     updateBold: (id: string, bold: boolean) => void;
     updateItalic: (id: string, italic: boolean) => void;
+    save: () => void;
 }
 
 const CanvasEditor = forwardRef<CanvasEditorRef, CanvasEditorProps>(
-    ({ widthPx, heightPx, unit }, ref) => {
+    ({ widthPx, heightPx, unit, canvasJson, onSave, imageUploadUrl }, ref) => {
         const canvasRef = useRef<HTMLCanvasElement>(null);
         const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
 
-        const addImageToCanvas = (imageSrc: string) => {
+        const addImageToCanvas = async (imageSrc: string) => {
             if (!fabricCanvasRef.current) return;
+
+            // If imageUploadUrl is provided, upload the image first
+            if (imageUploadUrl && imageSrc.startsWith('data:')) {
+                try {
+                    const formData = new FormData();
+                    const response = await fetch(imageSrc);
+                    const blob = await response.blob();
+                    formData.append('image', blob, 'upload.png');
+
+                    const uploadResponse = await fetch(imageUploadUrl, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRF-TOKEN':
+                                document
+                                    .querySelector('meta[name="csrf-token"]')
+                                    ?.getAttribute('content') || '',
+                        },
+                    });
+
+                    const uploadData = await uploadResponse.json();
+                    imageSrc = uploadData.url;
+                } catch (err) {
+                    console.error('Error uploading image:', err);
+                    return;
+                }
+            }
 
             fabric.Image.fromURL(imageSrc)
                 .then((img) => {
@@ -165,6 +196,12 @@ const CanvasEditor = forwardRef<CanvasEditorRef, CanvasEditorProps>(
             }
         };
 
+        const saveCanvas = () => {
+            if (!fabricCanvasRef.current || !onSave) return;
+            const json = fabricCanvasRef.current.toJSON();
+            onSave(json);
+        };
+
         useImperativeHandle(ref, () => ({
             addImage: addImageToCanvas,
             addText: addTextToCanvas,
@@ -173,6 +210,7 @@ const CanvasEditor = forwardRef<CanvasEditorRef, CanvasEditorProps>(
             updateFontSize: updateFontSizeInCanvas,
             updateBold: updateBoldInCanvas,
             updateItalic: updateItalicInCanvas,
+            save: saveCanvas,
         }));
 
         useEffect(() => {
@@ -198,6 +236,13 @@ const CanvasEditor = forwardRef<CanvasEditorRef, CanvasEditorProps>(
                 backgroundColor: '#f5f5f5',
                 viewportTransform: [1, 0, 0, 1, 0, 0],
             });
+
+            // Load canvas from JSON if provided
+            if (canvasJson) {
+                canvas.loadFromJSON(canvasJson as object, () => {
+                    canvas.renderAll();
+                });
+            }
 
             // Add keyboard event listener for delete key
             const handleKeyDown = (e: KeyboardEvent) => {
