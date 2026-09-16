@@ -3,18 +3,7 @@ import AuthenticatedLayout from '../../layouts/AuthenticatedLayout';
 import { PageProps } from '@inertiajs/core';
 import { Link } from '@inertiajs/react';
 import EditTemplateModal from '../../components/EditTemplateModal';
-
-interface Template {
-    id: number;
-    name: string;
-    width: number;
-    height: number;
-    unit: string;
-    dpi: number;
-    visibility: string;
-    canvas_json: any;
-    created_at: string;
-}
+import type { Template } from '@/types/template';
 
 interface ShowProps extends PageProps {
     template: Template;
