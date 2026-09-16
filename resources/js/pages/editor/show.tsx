@@ -1,25 +1,16 @@
 import AuthenticatedLayout from '@/layouts/AuthenticatedLayout';
 import type { Template } from '@/types/template';
 import EditorLayout from './layouts/EditorLayout';
-import { convertUnit } from '@/lib/conversion';
-import EditorCanvas from './components/EditorCanvas';
 
 const EditorPage = ({ template }: { template: Template }) => {
-    const widthInPixels = convertUnit(
-        template.width,
-        template.unit,
-        template.dpi,
-    );
-    const heightInPixels = convertUnit(
-        template.height,
-        template.unit,
-        template.dpi,
-    );
-
     return (
         <AuthenticatedLayout className="p-0!">
             <EditorLayout template={template}>
-                <EditorCanvas template={template} />
+                <div className="flex h-full items-center justify-center">
+                    <p className="text-base-content/50">
+                        Canvas editor will be rendered here
+                    </p>
+                </div>
             </EditorLayout>
         </AuthenticatedLayout>
     );

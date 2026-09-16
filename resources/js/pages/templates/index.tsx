@@ -20,7 +20,7 @@ const TemplatesPage = ({ templates }: { templates: Template[] }) => {
                             <div className="card-body">
                                 <h2 className="card-title">{template.name}</h2>
                                 <p>
-                                    {template.unit === 'pixels'
+                                    {template.unit === 'px'
                                         ? template.width
                                         : convertUnit(
                                               template.width,

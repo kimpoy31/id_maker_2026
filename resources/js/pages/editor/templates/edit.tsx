@@ -5,18 +5,7 @@ import CanvasEditor, {
 import { PageProps } from '@inertiajs/core';
 import { useState, useRef, useEffect } from 'react';
 import { router } from '@inertiajs/react';
-
-interface Template {
-    id: number;
-    name: string;
-    width: number;
-    height: number;
-    unit: string;
-    dpi: number;
-    visibility: string;
-    canvas_json: any;
-    created_at: string;
-}
+import type { Template } from '@/types/template';
 
 interface TextObject {
     id: string;
@@ -359,7 +348,7 @@ const Edit = ({ template }: EditProps) => {
                         ref={canvasRef}
                         widthPx={template.width}
                         heightPx={template.height}
-                        unit={template.unit as 'px' | 'mm' | 'in'}
+                        unit={template.unit}
                     />
                 </div>
             </div>

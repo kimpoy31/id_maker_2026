@@ -8,7 +8,7 @@ export type Template = {
     name: string;
     width: number;
     height: number;
-    unit: 'inches' | 'pixels';
+    unit: 'in' | 'px';
     dpi: number;
     canvas_json: unknown | null;
     visibility: TemplateVisibility;
@@ -29,7 +29,7 @@ export type TemplateFormData = {
     name: string;
     width: number;
     height: number;
-    unit: 'inches' | 'pixels';
+    unit: 'in' | 'px';
     dpi: number;
     canvas_json?: unknown;
     visibility?: TemplateVisibility;
