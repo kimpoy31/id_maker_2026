@@ -9,7 +9,7 @@ import * as fabric from 'fabric';
 interface CanvasEditorProps {
     widthPx: number;
     heightPx: number;
-    unit: 'px' | 'mm' | 'in';
+    unit: 'pixels' | 'inches';
 }
 
 export interface CanvasEditorRef {
@@ -184,14 +184,11 @@ const CanvasEditor = forwardRef<CanvasEditorRef, CanvasEditorProps>(
             let convertedWidth = widthPx;
             let convertedHeight = heightPx;
 
-            if (unit !== 'px') {
+            if (unit !== 'pixels') {
                 const dpi = 96;
-                if (unit === 'in') {
+                if (unit === 'inches') {
                     convertedWidth = widthPx * dpi;
                     convertedHeight = heightPx * dpi;
-                } else if (unit === 'mm') {
-                    convertedWidth = (widthPx * dpi) / 25.4;
-                    convertedHeight = (heightPx * dpi) / 25.4;
                 }
             }
 
