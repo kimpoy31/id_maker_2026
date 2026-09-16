@@ -6,9 +6,9 @@ export type TemplateUnit = 'in' | 'px';
  * If the unit is 'px', returns the value unchanged.
  */
 export function convertUnit(
-    value: number,
+    valueInPixels: number,
     unit: TemplateUnit,
     dpi: number,
 ): number {
-    return unit === 'in' ? value * dpi : value;
+    return unit === 'in' ? valueInPixels / dpi : valueInPixels;
 }

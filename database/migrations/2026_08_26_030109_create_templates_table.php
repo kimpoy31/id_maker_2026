@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('creator_id')->constrained('users')->cascadeOnDelete();
             $table->string('name');
-            $table->integer('width');
-            $table->integer('height');
+            $table->decimal('width', 10, 2);
+            $table->decimal('height', 10, 2);
             $table->integer('dpi')->default(300);
             $table->enum('unit', ['in', 'px'])->default('in');
             $table->json('canvas_json')->nullable();
