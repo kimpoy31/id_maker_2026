@@ -36,21 +36,13 @@ class TemplateController extends Controller
             'unit'   => 'required|in:in,px',
         ]);
 
-        if ($validated['unit'] === 'in') {
-            $widthPx  = (int) round($validated['width'] * $validated['dpi']);
-            $heightPx = (int) round($validated['height'] * $validated['dpi']);
-        } else {
-            $widthPx  = (int) round($validated['width']);
-            $heightPx = (int) round($validated['height']);
-        }
-
         $template = Template::create([
             'creator_id' => Auth::id(),
             'name'       => $validated['name'],
-            'width'      => $widthPx,
-            'height'     => $heightPx,
+            'width'      => $validated['width'],
+            'height'     => $validated['height'],
             'dpi'        => $validated['dpi'],
-            'unit'       => $validated['unit'] === 'in' ? 'inches' : 'pixels',
+            'unit'       => $validated['unit'],
             'visibility' => 'private',
         ]);
 

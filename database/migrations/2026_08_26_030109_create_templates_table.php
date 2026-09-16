@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('width');
             $table->integer('height');
             $table->integer('dpi')->default(300);
-            $table->enum('unit', ['inches', 'pixels'])->default('inches');
+            $table->enum('unit', ['in', 'px'])->default('in');
             $table->json('canvas_json')->nullable();
             $table->enum('visibility', ['private', 'shared', 'global'])->default('private');
             $table->timestamps();
